@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "server": "node --loader ts-node/esm src/server.ts"
+    "server": "node --loader ts-node/esm src/main.ts"
   },
   "devDependencies": {
     "@types/express": "^5.0.1",
