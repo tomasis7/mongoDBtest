@@ -7,10 +7,12 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "server": "node --loader ts-node/esm src/main.ts"
+    "server": "ts-node-esm src/server.ts",
+    "build-server": "tsc --project tsconfig-server.json"
   },
   "devDependencies": {
     "@types/express": "^5.0.1",
+    "@types/node": "^22.14.1",
     "ts-node": "^10.9.2",
     "typescript": "~5.7.2",
     "vite": "^6.3.1"

@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import { MongoClient } from "mongodb";
 
 const app = express();
@@ -58,17 +58,21 @@ async function connectToMongo() {
 }
 
 // Routes
-app.get("/", (_req, res) => {
+app.get("/", (req, res) => {
   res.send("MongoDB API Server");
 });
 
-app.get("/movies/future", async (_req, res) => {
+app.get("/movies/future", async (_req: Request, res: Response) => {
   try {
     const database = client.db("sample_mflix");
     const movies = database.collection("movies");
 
     const query = { title: "Back to the Future" };
     const movie = await movies.findOne(query);
+
+    if (!movie) {
+      return res.status(404).json({ error: "Movie not found" });
+    }
 
     res.json(movie);
   } catch (error) {
@@ -91,7 +95,7 @@ app.get("/movies", async (req, res) => {
   }
 });
 
-app.get("/movies/search", async (req, res) => {
+app.get("/movies/search", async (_req: Request, res: Response) => {
   try {
     const database = client.db("sample_mflix");
     const movies = database.collection("movies");
@@ -114,7 +118,7 @@ app.get("/movies/search", async (req, res) => {
   }
 });
 
-app.get("/collections", async (_req, res) => {
+app.get("/collections", async (req: Request, res: Response) => {
   try {
     const database = client.db("sample_mflix");
     const collections = await database.listCollections().toArray();
