@@ -1,11 +1,11 @@
-import express, { Request, Response, RequestHandler } from "express";
+import express from "express";
 import { MongoClient } from "mongodb";
 
 const app = express();
 const port = 3000;
 
 // MongoDB connection
-const uri = "mongodb://localhost:27017";
+const uri = "";
 const client = new MongoClient(uri);
 
 // Middleware
@@ -55,11 +55,11 @@ async function connectToMongo() {
 }
 
 // Routes
-const homeHandler: RequestHandler = (_req, res) => {
+app.get("/", (req, res) => {
   res.send("MongoDB API Server");
-};
+});
 
-const futureMovieHandler: RequestHandler = async (_req, res) => {
+app.get("/movies/future", async (req, res) => {
   try {
     const database = client.db("sample_mflix");
     const movies = database.collection("movies");
@@ -68,39 +68,38 @@ const futureMovieHandler: RequestHandler = async (_req, res) => {
     const movie = await movies.findOne(query);
 
     if (!movie) {
-      res.status(404).json({ error: "Movie not found" });
-      return;
+      return res.status(404).json({ error: "Movie not found" });
     }
 
     res.json(movie);
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
-};
+});
 
-const moviesHandler: RequestHandler = async (req, res) => {
+// New routes to explore MongoDB data
+app.get("/movies", async (req, res) => {
   try {
     const database = client.db("sample_mflix");
     const movies = database.collection("movies");
 
-    const limit = parseInt(req.query.limit as string) || 10;
+    const limit = parseInt(req.query.limit) || 10;
     const result = await movies.find().limit(limit).toArray();
 
     res.json(result);
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
-};
+});
 
-const searchMoviesHandler: RequestHandler = async (req, res) => {
+app.get("/movies/search", async (req, res) => {
   try {
     const database = client.db("sample_mflix");
     const movies = database.collection("movies");
 
-    const searchTerm = req.query.q as string;
+    const searchTerm = typeof req.query.q === "string" ? req.query.q : "";
     if (!searchTerm) {
-      res.status(400).json({ error: "Search term required" });
-      return;
+      return res.status(400).json({ error: "Search term required" });
     }
 
     const result = await movies
@@ -114,9 +113,9 @@ const searchMoviesHandler: RequestHandler = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
-};
+});
 
-const collectionsHandler: RequestHandler = async (_req, res) => {
+app.get("/collections", async (req, res) => {
   try {
     const database = client.db("sample_mflix");
     const collections = await database.listCollections().toArray();
@@ -125,14 +124,7 @@ const collectionsHandler: RequestHandler = async (_req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
-};
-
-// Register routes
-app.get("/", homeHandler);
-app.get("/movies/future", futureMovieHandler);
-app.get("/movies", moviesHandler);
-app.get("/movies/search", searchMoviesHandler);
-app.get("/collections", collectionsHandler);
+});
 
 // Start server
 async function startServer() {

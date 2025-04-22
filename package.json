@@ -2,19 +2,21 @@
   "name": "mongodbtest",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc",
     "preview": "vite preview",
-    "server": "node --loader ts-node/esm src/server.ts",
-    "build-server": "tsc --project tsconfig-server.json"
+    "start": "ts-node src/server.ts",
+    "dev:server": "ts-node-dev src/server.ts"
   },
   "devDependencies": {
     "@types/express": "^5.0.1",
+    "@types/mongodb": "^4.0.6",
     "@types/node": "^22.14.1",
     "ts-node": "^10.9.2",
-    "typescript": "~5.7.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.8.3",
     "vite": "^6.3.1"
   },
   "dependencies": {
