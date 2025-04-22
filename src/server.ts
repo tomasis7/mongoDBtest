@@ -95,12 +95,12 @@ app.get("/movies", async (req, res) => {
   }
 });
 
-app.get("/movies/search", async (_req: Request, res: Response) => {
+app.get("/movies/search", async (req: Request, res: Response) => {
   try {
     const database = client.db("sample_mflix");
     const movies = database.collection("movies");
 
-    const searchTerm = req.query.q as string;
+    const searchTerm = typeof req.query.q === "string" ? req.query.q : "";
     if (!searchTerm) {
       return res.status(400).json({ error: "Search term required" });
     }

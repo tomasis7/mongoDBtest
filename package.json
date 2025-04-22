@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "server": "ts-node-esm src/server.ts",
+    "server": "node --loader ts-node/esm src/server.ts",
     "build-server": "tsc --project tsconfig-server.json"
   },
   "devDependencies": {
